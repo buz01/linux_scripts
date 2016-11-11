@@ -1,0 +1,114 @@
+#==============================================================================
+#                                 conkyrc_grey
+#
+#  author  : SLK
+#  version : v2011011601
+#  license : Distributed under the terms of GNU GPL version 2 or later
+#
+#==============================================================================
+
+background no
+update_interval 1
+
+cpu_avg_samples 2
+net_avg_samples 2
+temperature_unit celsius
+
+double_buffer yes
+no_buffers yes
+text_buffer_size 2048
+
+gap_x 10
+gap_y 30
+minimum_size 190 450
+maximum_width 225
+own_window yes
+own_window_type override
+own_window_transparent yes
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
+border_inner_margin 0
+border_outer_margin 0
+alignment tr
+
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+
+override_utf8_locale yes
+use_xft yes
+xftfont caviar dreams:size=8
+xftalpha 0.5
+uppercase no
+
+default_color FFFFFF
+color1 DDDDDD
+color2 AAAAAA
+color3 888888
+color4 666666
+
+lua_load ~/.conky/conky_grey.lua
+lua_draw_hook_post main
+
+TEXT
+${goto 80}${font Ubuntu:size=12}${alignr}${color1}${time %A %e %b %Y}
+${goto 80}${font Ubuntu:size=14}${alignr}${color1}${time %H:%M:%S}
+${font Ubuntu:size=7}${color Tan2}GENERAL${color DarkSlateGray}${hr 2}
+${goto 80}${font Ubuntu:size=7}${color}Sysname:${alignr}${color1}${sysname}
+${goto 80}${font Ubuntu:size=7}${color}Kernel version:${alignr}${color1}${kernel}
+${goto 80}${font Ubuntu:size=7}${color}Uptime:${alignr}${color1}${uptime %H:%M:%S}
+${goto 80}${font Ubuntu:size=7}${color}Fan speed:${alignr}${color1}${ibm_fan} RPM
+${goto 80}${font Ubuntu:size=7}${color}Temperature:${alignr}${color1}${acpitemp}°C
+${voffset 40}
+${goto 90}${font Ubuntu:size=7}${color}CPU
+${goto 90}${font Ubuntu:size=7}${color1}${top name 1}${alignr}${top cpu 1}%
+${goto 90}${font Ubuntu:size=7}${color2}${top name 2}${alignr}${top cpu 2}%
+${goto 90}${font Ubuntu:size=7}${color3}${top name 3}${alignr}${top cpu 3}%
+${goto 90}${cpugraph 10,100 666666 666666}
+${goto 90}${voffset 5}${font Ubuntu:size=7}${color}${running_processes} process
+
+${voffset 30}
+${goto 90}${font Ubuntu:size=7}${color}MEM
+${goto 90}${font Ubuntu:size=7}${color1}${top_mem name 1}${alignr}${top_mem mem 1}%
+${goto 90}${font Ubuntu:size=7}${color2}${top_mem name 2}${alignr}${top_mem mem 2}%
+${goto 90}${font Ubuntu:size=7}${color3}${top_mem name 3}${alignr}${top_mem mem 3}%
+
+${voffset 25}
+${goto 90}${font Ubuntu:size=7}${color}DISKS
+
+${goto 90}${diskiograph 30,100 666666 666666}${voffset -30}
+${goto 90}${font Ubuntu:size=7}${color}used for / : ${fs_used /}
+${goto 90}${font Ubuntu:size=7}${color}Swap: ${swapperc} %
+
+${color Tan2}NETWORK Data${color DarkSlateGray}${hr 2}
+${image /home/buzz/.conky/flag.png -p 20,492 -s 30x20 -n}
+${goto 80}${font Ubuntu:size=7}${color}Country:${alignr}${color1}${execi 60 curl -s http://whatismycountry.com/ | iconv -f iso8859-1 -t utf-8 | sed -n 's|.*,\(.*\)</h3>|\1|p'}${texeci 60 wget -O /home/buzz/.conky/flag.png http://whatismycountry.com/images/flags/$(curl -s http://whatismycountry.com/ | iconv -f iso8859-1 -t utf-8 | sed -n 's|.*src="/images/flags/\([a-z._]*\).*|\1|p') }
+${if_existing /proc/net/route eth0}${goto 80}${font Ubuntu:size=7}${color}Up: ${upspeed enp0s25} kb/s${alignr}${upspeedgraph enp0s25 8,60}
+${goto 80}${font Ubuntu:size=7}${color}Down: ${downspeed enp0s25} kb/s ${alignr}${downspeedgraph enp0s25 8,60}
+${goto 80}${font Ubuntu:size=7}${color}Upload: ${alignr}${totalup enp0s25}
+${goto 80}${font Ubuntu:size=7}${color}Download: ${alignr}${totaldown enp0s25}
+${goto 80}${font Ubuntu:size=7}${color}Local Ip: ${alignr}${addr enp0s25}
+${else if_existing /proc/net/route wlp3s0}${goto 80}${font Ubuntu:size=7}${color}Signal:${alignr}${color1}${wireless_link_qual wlp3s0}%
+${goto 80}${font Ubuntu:size=7}${color}ESSID:${alignr}${color1}${wireless_essid wlp3s0}
+${goto 80}${font Ubuntu:size=7}${color}Bitrate / Quality:${alignr}${color1}${wireless_bitrate wlp3s0} / ${wireless_link_qual_perc wlp3s0}%
+${goto 80}${font Ubuntu:size=7}${color}Up: ${upspeed wlp3s0} kb/s ${alignr}${upspeedgraph wlp3s0 8,60}
+${goto 80}${font Ubuntu:size=7}${color}Down: ${downspeed wlp3s0} kb/s ${alignr}${downspeedgraph wlp3s0 8,60}
+${goto 80}${font Ubuntu:size=7}${color}Upload: ${alignr}${totalup wlp3s0}
+${goto 80}${font Ubuntu:size=7}${color}Download: ${alignr}${totaldown wlp3s0}
+${goto 80}${font Ubuntu:size=7}${color}Local IP: ${alignr}${addr wlp3s0}${endif}
+${goto 80}${font Ubuntu:size=7}${color}Public IP:${alignr}${color1}${execi 60 curl icanhazip.com}
+${goto 80}${font Ubuntu:size=7}${color}DNS 1:${alignr}${color1}${nameserver 0}
+${goto 80}${font Ubuntu:size=7}${color}Hostname:${alignr}${color1}${nodename}
+
+${color Tan2}BATTERY${color DarkSlateGray}${hr 2}
+${goto 80}${font Ubuntu:size=7}${color}Status:${alignr}${color1}${battery}
+${goto 80}${font Ubuntu:size=7}${color}Estimated time:${alignr}${color1}${battery_time}
+${goto 80}${font Ubuntu:size=7}${color}${alignr}${color1}${battery_bar 8,145}
+
+
+${color Tan2}ESTABLISHED Connections${color DarkSlateGray}${hr 2}
+
+${color lightgrey}Inbound: ${color white}${tcp_portmon 1 32767 count}                        ${color lightgrey}Outbound: ${color white}${tcp_portmon 32768 61000 count}${alignr}${color lightgrey}Total: ${color white}${tcp_portmon 1 65535 count}
+
+${color slate grey}Process                     ${color slate grey}Remote IP                 ${color slate grey}L-Port      R-Port${color lightgrey}
+${font Ubuntu Mono:size=8}${texeci 15 netstat -anp | grep 'ESTABLISHED' | awk 'BEGIN { FS = "[ :/\t]+" } ; $10 { processname=$10 } !$10 { processname="-"} { print processname "\t" $6 "\t" $5 "\t" $7}' | awk '{printf("%-14s %-15s %5s %5s\n",$1,$2,$3,$4)}' | sort }
